@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import argparse
 import sys
 import os
@@ -48,9 +50,12 @@ def trainEpochs(epochs, training_set, valid_set, batch_size=64, print_each=10, s
     best_acc = 0.0
     best_val_loss = float('inf')
     best_model_path = os.path.join(saving_path, 'best_model.pt')
+    
+    # 早停变量
     patience_counter = 0
     print('start training epoch ' + str(epoch + 1) + '....')
     print(training_set.get_size(), batch_size, n_batch)
+
 
     accumulation_steps = 2
 
@@ -71,7 +76,7 @@ def trainEpochs(epochs, training_set, valid_set, batch_size=64, print_each=10, s
                 patience_counter += 1
                 print(f"[Info] No improvement. Patience counter: {patience_counter}/{patience}")
             
-
+            # 早停检查
             if patience_counter >= patience:
                 print(f"[Early Stopping] No improvement for {patience} epochs. Stop training.")
                 break
@@ -79,13 +84,16 @@ def trainEpochs(epochs, training_set, valid_set, batch_size=64, print_each=10, s
                 break
             i = 0
             print('start training epoch ' + str(epoch + 1) + '....')
+
         if i % accumulation_steps == 0:
             optimizer.zero_grad()
 
         inputs, labels = gettensor(batch, batchfirst=(_model == 'Transformer'))
         outputs = classifier(inputs)[0]
+
         loss = criterion(outputs, labels) / accumulation_steps
         loss.backward()
+
         if (i + 1) % accumulation_steps == 0:
             torch.nn.utils.clip_grad_norm_(classifier.parameters(), max_norm=1.0)
             optimizer.step()
@@ -106,6 +114,7 @@ def trainEpochs(epochs, training_set, valid_set, batch_size=64, print_each=10, s
             plot_loss_total = 0
 
         i += 1
+
 
 def evaluate(dataset, batch_size=64):
     classifier.eval()
@@ -141,6 +150,7 @@ def evaluate(dataset, batch_size=64):
     acc = float(testcorrect) / testnum
     avg_loss = total_loss / testnum
     
+
     f1 = f1_score(all_labels, all_preds, average='weighted')
     precision = precision_score(all_labels, all_preds, average='weighted')
     recall = recall_score(all_labels, all_preds, average='weighted')
@@ -154,19 +164,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', default="0")
     parser.add_argument('--lr', type=float, default=1e-3)
-    parser.add_argument('--save_dir', default="../model/author_lstm")
-    parser.add_argument('--save_name', default="author_LSTM")
+    parser.add_argument('--save_dir', default="../model/author_GRU")
+    parser.add_argument('--save_name', default="author_GRU")
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--epoch', type=int, default=100)
+    parser.add_argument('--epoch', type=int, default=200)
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--dropout', type=float, default=0.3)
+    parser.add_argument('--model', default="GRU")
     parser.add_argument('--attn', action='store_true', default=True)
-    parser.add_argument('--model', default="LSTM")
-    
     parser.add_argument('--l2p', type=float, default=1e-4)
     parser.add_argument('--data', type=str, default='../data_author/author.pkl.gz')
-    parser.add_argument('--adv_train_path', type=str, default=None)
-    parser.add_argument('--adv_train_size', type=int, default=20)
+    # parser.add_argument('--adv_train_path', type=str, default=None)
+    # parser.add_argument('--adv_train_size', type=int, default=200)
     opt = parser.parse_args()
 
     torch.manual_seed(opt.seed)
@@ -211,7 +220,7 @@ if __name__ == "__main__":
         {'params': classifier.encoder.parameters(), 'lr': 5e-4},
         {'params': classifier.classifier.parameters(), 'lr': 1e-3}
     ], weight_decay=opt.l2p)
-
+    
     scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
         optimizer, 
         T_0=10,
@@ -220,6 +229,7 @@ if __name__ == "__main__":
     )
 
     criterion = LabelSmoothingCrossEntropy(smoothing=0.1)
+
     os.makedirs(opt.save_dir, exist_ok=True)
 
     print(f"Starting training with {opt.model} model")
