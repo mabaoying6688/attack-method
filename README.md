@@ -53,7 +53,7 @@ This is the recommended environment. Other versions may be compatible.
 
 ## Training the DL Model
 
-All trained models are available at Website A. Alternatively, you can train the models by following the steps below.
+All trained models are available at [Website](https://drive.google.com/drive/quota). Alternatively, you can train the models by following the steps below.
 
 The source code directories are named according to the dataset and the model. `code`, `code_clone` and `code_author` refers to OJ, OJClone and Authorship, respectively.
 
