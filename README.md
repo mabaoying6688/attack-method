@@ -16,10 +16,8 @@ This is the recommended environment. Other versions may be compatible.
 
 **Use the pre-processed datasets**
 
-1. Download the already pre-processed datasets -- [OJ](https://drive.google.com/drive/folders/1__SjuEKH8Sa_OYWhegiGE6Brbr1ObZrM?usp=sharing), [OJClone](https://drive.google.com/drive/folders/1PaqKmUqV-TPwSGWvUEhALW20crcfeU5D?usp=sharing), and [Authorship](https://github.com/tianzhaotju/CODA).
+1. Use the already pre-processed datasets -- [OJ], [OJClone], and [Authorship] in this website.
  
-Note: The Authorship dataset can be obtained using docker on the [website](https://github.com/tianzhaotju/CODA).
-
 2. Put the contents of OJ, OJClone and Authorship in the corresponding directories of `data`, `data_clone`, and `data_author` respectively.
 
 3. The pre-processed datasets for GRU, LSTM, LSCNN, and CodeBERT are all included in the directories now.
