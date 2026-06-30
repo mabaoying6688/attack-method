@@ -179,7 +179,7 @@ if __name__ == "__main__":
     print(f"Using device: {device}")
 
     vocab_size = 2300
-    embedding_size = 768
+    embedding_size = 512
     hidden_size = 1024
     n_layers = 2
     num_classes = 66
