@@ -53,7 +53,7 @@ This is the recommended environment. Other versions may be compatible.
 
 ## Training the DL Model
 
-All trained models are available at [Website](https://drive.google.com/drive/folders/1Rt2Y980YJsev3fwfij_gi0w60boS4tCe?usp=sharing). Alternatively, you can train the models by following the steps below.
+All trained models used in this study are available at [Google Drive](https://drive.google.com/drive/folders/1Rt2Y980YJsev3fwfij_gi0w60boS4tCe?usp=sharing). Alternatively, you can train the models by following the steps below.
 
 The source code directories are named according to the dataset and the model. `code`, `code_clone` and `code_author` refers to OJ, OJClone and Authorship, respectively.
 
